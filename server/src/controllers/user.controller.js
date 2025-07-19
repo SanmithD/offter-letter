@@ -1,0 +1,169 @@
+import bcrypt from 'bcrypt';
+import { upload } from '../config/cloud.config.js';
+import { generateToken } from '../config/token.config.js';
+import { userModel } from '../model/user.model.js';
+import { errorFunction } from '../utils/error.util.js';
+
+export const signup = async(req, res) => {
+    const { 
+        email, 
+        name, 
+        title, 
+        profilePic, 
+        password, 
+        phone, 
+        dob, 
+        address, 
+        resume, 
+        bio, 
+        skills = [], 
+        college, 
+        marks, 
+        experience 
+    } = req.body;
+
+    if(!email || !password || !name || !title || !phone || !dob || !address || !college || !marks){
+        return errorFunction(400, false, "All required fields must be provided", res);
+    }
+
+    try {
+        const existingUser = await userModel.findOne({ email });
+        if(existingUser) {
+            return errorFunction(409, false, "User already exists with this email", res);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        let profilePicUrl = null;
+        let resumeUrl = null;
+        let skill = [];
+
+        if(typeof skills === 'string'){
+            skill = skills.split(",").map(skill => skill.trim()).filter(skill => skill.length > 0 );
+        }
+
+        if(profilePic) {
+            try {
+                const profileUpload = await upload.uploader.upload(profilePic, {
+                    resource_type: 'image',
+                    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+                    folder: 'profile_pics',
+                    transformation: [
+                        { width: 500, height: 500, crop: 'fill' },
+                        { quality: 'auto' }
+                    ]
+                });
+                profilePicUrl = profileUpload.secure_url;
+            } catch (uploadError) {
+                console.error('Profile picture upload error:', uploadError);
+                return errorFunction(400, false, "Failed to upload profile picture", res);
+            }
+        }
+
+        // try {
+        //     const resumeUpload = await upload.uploader.upload(resume, {
+        //         resource_type: 'raw',
+        //         allowed_formats: ['pdf', 'doc', 'docx'],
+        //         folder: 'resumes'
+        //     });
+        //     resumeUrl = resumeUpload.secure_url;
+        // } catch (uploadError) {
+        //     console.error('Resume upload error:', uploadError);
+        //     return errorFunction(400, false, "Failed to upload resume. Please ensure it's a valid PDF or DOC file", res);
+        // }
+
+        const newUser = new userModel({
+            email: email.toLowerCase().trim(),
+            name: name.trim(),
+            title: title.trim(),
+            profilePic: profilePicUrl,
+            password: hashedPassword,
+            phone: phone.trim(),
+            dob: new Date(dob),
+            address: address.trim(),
+            // resume: resumeUrl,
+            bio: bio?.trim() || '',
+            skills: skill,
+            college: college.trim(),
+            marks: parseFloat(marks),
+            experience: experience || 0
+        });
+
+        const savedUser = await newUser.save();
+
+        const userResponse = savedUser.toObject();
+        delete userResponse.password;
+
+        generateToken(savedUser._id, res);
+        res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+            data: userResponse
+        });
+
+    } catch (error) {
+        console.error('Signup error:', error);
+        return errorFunction(500, false, "Server error during registration", res);
+    }
+};
+
+export const login = async(req, res) =>{
+    const { email, password } = req.body;
+    if(!email || !password) return errorFunction(400,false, "All fields are required",res);
+    try {
+        const user = await userModel.findOne({ email });
+        if(!user) return errorFunction(404,false, "Email does not exists",res);
+
+        const isPassword = bcrypt.compare(password, user.password);
+        if(!isPassword) return errorFunction(403,false, "Invalid credential",res);
+
+        const token = generateToken(user._id, res);
+        res.status(200).json({
+            success: true,
+            message: "Login success",
+            data: user,
+            token
+        });
+    } catch (error) {
+        console.log(error);
+        errorFunction(500,false,"Server error",res);
+    }
+}
+
+export const profile = async(req, res) =>{
+    const userId = req.user._id;
+    if(!userId) return errorFunction(404, false, "Invalid user", res);
+
+    try {
+        const user = await userModel.findById(userId).select("-password");
+        if(!user) return errorFunction(404, false, "Not found", res);
+
+        res.status(200).json({
+            success: true,
+            message: "User profile",
+            data: user
+        });
+    } catch (error) {
+        console.log(error);
+        return errorFunction(500, false, "Server error", res);
+    }
+}
+
+export const deleteUser = async(req, res) =>{
+    const userId = req.user._id;
+    if(!userId) return errorFunction(404, false, "Invalid user", res);
+
+    try {
+        const user = await userModel.findByIdAndDelete(userId).select("-password");
+        if(!user) return errorFunction(404, false, "Not found", res);
+
+        res.status(200).json({
+            success: true,
+            message: "User profile deleted",
+            data: user
+        });
+    } catch (error) {
+        console.log(error);
+        return errorFunction(500, false, "Server error", res);
+    }
+}

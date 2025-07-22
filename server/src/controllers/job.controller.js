@@ -62,3 +62,23 @@ export const removeJob = async(req, res) =>{
         return errorFunction(500, false, "Server error", res);
     }
 }
+
+export const getJob = async(req, res) =>{
+    const { jobId } = req.body;
+    const userId = req.user._id;
+
+    if(!jobId || !userId) return errorFunction(403,false, "Invalid request", res);
+    try {
+        const response = await jobModel.findById(jobId);
+        if(!response) return errorFunction(404, false, "Not found", res);
+
+        res.status(200).json({
+            success: true,
+            message: "Job details",
+            response
+        });
+    } catch (error) {
+        console.log(error);
+        return errorFunction(500, false, "Server error", res);
+    }
+}

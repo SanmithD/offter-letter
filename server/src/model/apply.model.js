@@ -17,7 +17,7 @@ const applySchema = new mongoose.Schema({
         type: String
     },
     noticePeriod: {
-        type: Number
+        type: String
     }
 },{ timestamps: true });
 

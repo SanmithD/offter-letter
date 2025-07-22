@@ -82,6 +82,7 @@ export const signup = async(req, res) => {
             dob: new Date(dob),
             address: address.trim(),
             // resume: resumeUrl,
+            resume,
             bio: bio?.trim() || '',
             skills: skill,
             college: college.trim(),
@@ -114,7 +115,7 @@ export const login = async(req, res) =>{
         const user = await userModel.findOne({ email });
         if(!user) return errorFunction(404,false, "Email does not exists",res);
 
-        const isPassword = bcrypt.compare(password, user.password);
+        const isPassword = await bcrypt.compare(password, user.password);
         if(!isPassword) return errorFunction(403,false, "Invalid credential",res);
 
         const token = generateToken(user._id, res);
@@ -161,6 +162,26 @@ export const deleteUser = async(req, res) =>{
             success: true,
             message: "User profile deleted",
             data: user
+        });
+    } catch (error) {
+        console.log(error);
+        return errorFunction(500, false, "Server error", res);
+    }
+}
+
+export const getUserInfo = async(req, res) =>{
+    const { userId } = req.params;
+
+    if(!userId) return errorFunction(404, false, "Invalid message", res);
+
+    try {
+        const response = await userModel.findById(userId).select("-password");
+        if(!response) return errorFunction(404, false, "Not found", res);
+
+        res.status(200).json({
+            success: true,
+            message: "User details",
+            response
         });
     } catch (error) {
         console.log(error);

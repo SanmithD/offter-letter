@@ -1,6 +1,7 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { searchBySalary, searchBySkill, searchJobs } from "../tools/job.tool.js";
+import { getProfileByAi } from "../tools/user.tool.js";
 
 const model = new ChatGoogleGenerativeAI({
     model: 'gemini-1.5-flash',
@@ -14,6 +15,7 @@ export const agent = createReactAgent({
     tools: [
         searchBySkill,
         searchBySalary,
-        searchJobs
+        searchJobs,
+        getProfileByAi
     ],
 });

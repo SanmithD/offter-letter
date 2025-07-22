@@ -1,6 +1,7 @@
 import { tool } from '@langchain/core/tools';
 import z from 'zod';
 import { jobModel } from '../model/job.model.js';
+import { searchModel } from '../model/search.model.js';
 import { userModel } from '../model/user.model.js';
 
 export const searchBySkill = tool(
@@ -57,7 +58,7 @@ export const searchBySalary = tool(
 );
 
 export const searchJobs = tool(
-    async({ query, location, jobType }) => {
+    async({ query, location, jobType, userId }) => {
         try {
             let searchCriteria = {};
             
@@ -78,6 +79,13 @@ export const searchJobs = tool(
             }
             
             const jobs = await jobModel.find(searchCriteria);
+            const searchJob = new searchModel({
+                userId,
+                jobId: '',
+                searchText: query
+            });
+
+            await searchJob.save();
             
             return {
                 result: jobs,

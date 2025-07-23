@@ -52,7 +52,6 @@ export const UseAuthStore = create((set) =>({
     profile : async() =>{
         try {
             const response = await axiosInstance.get('/auth/profile');
-            console.log(response.data);
             set({ authUser: response.data.data})
         } catch (error) {
             console.log(error);

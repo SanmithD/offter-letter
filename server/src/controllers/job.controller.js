@@ -64,12 +64,12 @@ export const removeJob = async(req, res) =>{
 }
 
 export const getJob = async(req, res) =>{
-    const { jobId } = req.body;
+    const { jobId } = req.params;
     const userId = req.user._id;
 
     if(!jobId || !userId) return errorFunction(403,false, "Invalid request", res);
     try {
-        const response = await jobModel.findById(jobId);
+        const response = await jobModel.findById(jobId).populate("publisherId");
         if(!response) return errorFunction(404, false, "Not found", res);
 
         res.status(200).json({
@@ -77,6 +77,22 @@ export const getJob = async(req, res) =>{
             message: "Job details",
             response
         });
+    } catch (error) {
+        console.log(error);
+        return errorFunction(500, false, "Server error", res);
+    }
+}
+
+export const getAllJobs = async(req, res) =>{
+    try {
+        const response = await jobModel.find().populate("publisherId").sort({ createdAt: -1 });
+        if(!response) return errorFunction(404, false, "Not found", res);
+
+        res.status(200).json({
+            success: true,
+            message: "All jobs",
+            response
+        })
     } catch (error) {
         console.log(error);
         return errorFunction(500, false, "Server error", res);

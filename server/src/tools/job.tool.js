@@ -7,7 +7,7 @@ import { userModel } from '../model/user.model.js';
 export const searchBySkill = tool(
     async({ userId }) => {
         try {
-            const user = await userModel.findById(userId).select("skills");
+            const user = await userModel.findById(userId).select("skills").sort({ createdAt: -1 });
             if (!user || !user.skills || user.skills.length === 0) {
                 throw new Error("User not found or has no skills");
             }
@@ -38,7 +38,7 @@ export const searchBySalary = tool(
         try {
             const jobs = await jobModel.find({ 
                 salary: { $gte: salary } 
-            });
+            }).sort({ createdAt: -1 });
             
             return {
                 result: jobs,
@@ -78,7 +78,7 @@ export const searchJobs = tool(
                 searchCriteria.type = jobType;
             }
             
-            const jobs = await jobModel.find(searchCriteria);
+            const jobs = await jobModel.find(searchCriteria).sort({ createdAt: -1 });
             const searchJob = new searchModel({
                 userId,
                 jobId: '',

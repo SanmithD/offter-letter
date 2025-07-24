@@ -77,15 +77,15 @@ export const searchJobs = tool(
             if (jobType) {
                 searchCriteria.type = jobType;
             }
-            
-            const jobs = await jobModel.find(searchCriteria).sort({ createdAt: -1 });
-            const searchJob = new searchModel({
-                userId,
-                jobId: '',
-                searchText: query
-            });
 
-            await searchJob.save();
+            const jobs = await jobModel.find(searchCriteria).sort({ createdAt: -1 });
+            if(query && query.trim()){
+                const searchJob = new searchModel({
+                    userId,
+                    searchText: query
+                });
+                await searchJob.save();
+            }
             
             return {
                 result: jobs,
@@ -106,3 +106,34 @@ export const searchJobs = tool(
     }
 );
 
+export const searchPlaceJobs = tool(
+    async({ place }) => {
+        try {
+            if (!place || typeof place !== 'string') {
+                throw new Error("Enter valid query");
+            }
+
+            const validPlaces = ['Onsite', 'Remote', 'Hybrid'];
+            
+            if (!validPlaces.includes(place)) {
+                throw new Error(`Invalid place type. Must be one of: ${validPlaces.join(', ')}`);
+            }
+
+            const response = await jobModel.find({ place: place }).sort({ createdAt: -1 });
+
+            return {
+                result: response,
+                message: `Found ${response.length} ${place} jobs`
+            };
+        } catch (error) {
+            console.log("Error in searchPlaceJobs:", error);
+            throw new Error(error.message);
+        }
+    }, {
+        name: "search_job_by_place",
+        description: 'Find jobs by work location type: onsite, remote, or hybrid',
+        schema: z.object({
+            place: z.enum(['Onsite', 'Remote', 'Hybrid']).describe("Work location type (Onsite, Remote, Hybrid)")
+        })
+    }
+);

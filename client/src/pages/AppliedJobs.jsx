@@ -1,6 +1,6 @@
-import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 import JobSkeleton from '../components/skeletons/JobSkeleton';
 import { UseJobStore } from "../store/UseJobStore";
 
@@ -14,14 +14,9 @@ function AppliedJobs() {
   
   return (
     <div className={"h-screen container mx-auto sm:px-4 py-4 "}>
-      <div>
-        <div className="block pl-3 md:hidden lg:hidden">
-          <h1 className="text-2xl flex items-center py-4 cursor-pointer">
-            <span onClick={() => navigate(-1)}>
-              <ArrowLeft className="size-7" />
-            </span>
-            Applied Jobs
-          </h1>
+      <div >
+        <div className="px-4 md:hidden lg:hidden " >
+        <Header name={"Applied Jobs"} />
         </div>
         <div>
           {isLoading ? (

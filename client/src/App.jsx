@@ -12,6 +12,8 @@ const Login = lazy(() => import("./pages/Login"));
 const AppliedJobs = lazy(() => import("./pages/AppliedJobs"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Jobs = lazy(() => import("./pages/Jobs"));
+const Help = lazy(() => import("./pages/Help"));
+const PostJob = lazy(() => import("./pages/PostJob"));
 
 function App() {
   const { theme } = UseThemeStore();
@@ -33,10 +35,12 @@ function App() {
           <Route path="/appliedJobs" element={<AppliedJobs />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/postJob" element={<PostJob />} />
           <Route path="/jobDetail/:jobId" element={<JobDetail />} />
         </Routes>
 
-        {/* Mobile Navbar */}
+        
         <div className="block sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-gray-800 ">
           <Navbar />
         </div>

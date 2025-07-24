@@ -1,6 +1,6 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { searchBySalary, searchBySkill, searchJobs } from "../tools/job.tool.js";
+import { searchBySalary, searchBySkill, searchJobs, searchPlaceJobs } from "../tools/job.tool.js";
 import { getProfileByAi } from "../tools/user.tool.js";
 
 const model = new ChatGoogleGenerativeAI({
@@ -16,6 +16,7 @@ export const agent = createReactAgent({
         searchBySkill,
         searchBySalary,
         searchJobs,
-        getProfileByAi
+        getProfileByAi,
+        searchPlaceJobs
     ],
 });

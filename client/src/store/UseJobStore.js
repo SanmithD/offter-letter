@@ -49,7 +49,6 @@ export const UseJobStore = create((set) => ({
         set({ isLoading: true });
         try {
             const response = await axiosInstance.get('/jobs/');
-            console.log(response.data);
             set({ isLoading: false, job: response.data.response });
         } catch (error) {
             console.log(error);

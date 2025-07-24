@@ -49,6 +49,18 @@ export const UseAuthStore = create((set) =>({
         }
     },
 
+    deleteUser: async() =>{
+        set({ isLogin: true });
+        try {
+            await axiosInstance.delete('/auth/delete');
+            set({ isLogin: false, authUser: null, success: true });
+            localStorage.removeItem('token');
+        } catch (error) {
+            set({ isLogin: false });
+            console.log(error);
+            toast.error("Something went wrong")
+        }
+    },
     profile : async() =>{
         try {
             const response = await axiosInstance.get('/auth/profile');

@@ -7,9 +7,8 @@ function Jobs() {
   const navigate = useNavigate();
   const [searchMsg, setSearchMsg] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const { getJobByAi, searchJob, jobs, searchedJobs } = UseAgentStore();
+  const { getJobByAi, searchJob, jobs, searchedJobs} = UseAgentStore();
 
-  // Load AI recommended jobs when component mounts
   useEffect(() => {
     getJobByAi();
   }, []);
@@ -50,7 +49,7 @@ function Jobs() {
             onChange={(e) => setSearchMsg(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             className="border rounded-md w-full h-fit py-2.5 pl-10 pr-3"
-            placeholder="Search Keywords, location, skills, etc..."
+            placeholder="Search jobs by Ai"
           />
         </div>
         <div className="flex gap-2">
@@ -93,11 +92,11 @@ function Jobs() {
               {jobsToDisplay.map((jobItem, index) => (
                 <div 
                   key={jobItem.id || index} 
-                  className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white"
+                  className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => navigate(`/jobDetail/${jobItem?._id}`)}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold text-gray-800">
+                    <h3 className="text-xl font-semibold ">
                       {jobItem.jobTitle || jobItem.title}
                     </h3>
                     {isSearching && (

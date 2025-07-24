@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   BriefcaseIcon,
   Calendar1Icon,
   DownloadIcon,
@@ -9,17 +8,18 @@ import {
   School2,
   Share2,
   Sun,
-  User2Icon,
+  User2Icon
 } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 import { ProfilePic } from "../components/skeletons/ProfileSkeleton";
 import { UseAuthStore } from "../store/UserStore";
 import { UseThemeStore } from "../store/UseThemeStore";
 
 function Profile() {
   const navigate = useNavigate();
-  const { profile, authUser, logout, success } = UseAuthStore();
+  const { profile, authUser, logout, success, deleteUser } = UseAuthStore();
   const { theme, setTheme } = UseThemeStore();
 
   useEffect(() => {
@@ -33,6 +33,13 @@ function Profile() {
     }
   };
 
+  const handleDelete = async() =>{
+    await deleteUser();
+    if(success){
+      navigate('/signup')
+    }
+  }
+
   if (!authUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -44,19 +51,11 @@ function Profile() {
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="block md:hidden lg:hidden">
-          <h1 className="text-2xl flex items-center pb-4 cursor-pointer">
-            {" "}
-            <span onClick={() => navigate(-1)}>
-              <ArrowLeft className="size-7" />
-            </span>{" "}
-            Profile
-          </h1>
-        </div>
+        <Header name={"Profile"} />
         <div className="pt-[30px] md:pt-10 lg:pt-10 rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
           <div className="relative px-6 pb-6">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-6">
-              <div className="relative -mt-16 sm:-mt-20">
+            <div className="flex items-center gap-2 md:justify-self-start space-y-0.5 md:space-y-0 lg:space-y-0 ">
+              <div className="relative ">
                 {authUser?.profilePic ? (
                   <img
                     src={authUser?.profilePic}
@@ -71,7 +70,7 @@ function Profile() {
               </div>
 
               <div className="mt-4 sm:mt-0 flex-1">
-                <h1 className="text-2xl sm:text-3xl font-bold ">
+                <h1 className="text-[20px] md:text-2xl lg:text-2xl font-bold ">
                   {authUser?.name}
                 </h1>
                 <p className="text-lg mt-1 text-gray-500 font-medium ">
@@ -144,13 +143,11 @@ function Profile() {
             {authUser?.resume && (
               <div className="rounded-2xl shadow-sm border border-gray-200 p-6">
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  {/* <DocumentIcon className="h-5 w-5 text-green-500" /> */}
                   Resume
                 </h2>
                 <div className="flex items-center justify-between p-4 rounded-xl border-2 border-dashed border-gray-300">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-red-100 rounded-lg">
-                      {/* <DocumentIcon className="h-6 w-6 text-red-500" /> */}
                     </div>
                     <div>
                       <p className="font-medium">Resume.pdf</p>
@@ -228,6 +225,11 @@ function Profile() {
               </div>
             )}
 
+            <div className="flex items-center gap-2" >
+              <h1 className="text-[22px] font-bold font-stretch-expanded tracking-wide " >Hire candidates :</h1>
+              <button className="px-4 py-1.5 text-[20px] font-bold border-1 rounded-md cursor-pointer hover:border-blue-500 " onClick={()=> navigate('/postJob')} >Post job</button>
+            </div>
+
             <div className="rounded-2xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
               <div className="space-y-3">
@@ -247,8 +249,9 @@ function Profile() {
                   Share Profile
                 </button>
                 <div className="flex items-center justify-between" >
+                  <div className="flex gap-2" >
                 <button
-                  className="btn bg-red-500 "
+                  className="btn bg-yellow-500 "
                   onClick={() =>
                     document.getElementById("my_modal_1").showModal()
                   }
@@ -267,11 +270,37 @@ function Profile() {
                     </div>
                     <div className="modal-action">
                       <form method="dialog">
-                        <button className="btn bg-red-500 " onClick={handleLogout}>Logout</button>
+                        <button className="btn bg-yellow-500 " onClick={handleLogout}>Logout</button>
                       </form>
                     </div>
                   </div>
                 </dialog>
+                <button
+                  className="btn bg-red-500 "
+                  onClick={() =>
+                    document.getElementById("my_modal_2").showModal()
+                  }
+                >
+                  Delete
+                </button>
+                <dialog id="my_modal_2" className="modal">
+                  <div className="modal-box flex items-center gap-3 ">
+                    <p className="py-4">
+                      Are you sure want to Delete Account ?
+                    </p>
+                    <div className="modal-action">
+                      <form method="dialog">
+                        <button className="btn">Close</button>
+                      </form>
+                    </div>
+                    <div className="modal-action">
+                      <form method="dialog">
+                        <button className="btn bg-red-500 " onClick={handleDelete}>Delete</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
+                  </div>
               <div className="my-4 flex items-center gap-3 ">
                 <h1>Appearance</h1>
                 <button

@@ -1,4 +1,4 @@
-import { BriefcaseBusinessIcon, File, Home, User2Icon } from "lucide-react";
+import { Brain, BriefcaseBusinessIcon, File, Home, User2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -8,7 +8,8 @@ function Navbar() {
     home: false,
     jobs: false,
     applied: false,
-    profile: false
+    profile: false,
+    help: false
   });
 
   useEffect(() => {
@@ -17,7 +18,8 @@ function Navbar() {
       home: currentPath === '/',
       jobs: currentPath === '/jobs',
       applied: currentPath === '/appliedJobs',
-      profile: currentPath === '/profile'
+      profile: currentPath === '/profile',
+      help: currentPath === '/help',
     });
   }, [location.pathname]);
 
@@ -26,7 +28,8 @@ function Navbar() {
       home: tab === 'home',
       jobs: tab === 'jobs',
       applied: tab === 'applied',
-      profile: tab === 'profile'
+      profile: tab === 'profile',
+      help: tab === 'help',
     });
   };
 
@@ -71,6 +74,15 @@ function Navbar() {
         >
           <Link to='/profile'><User2Icon /></Link>
           <p className="text-xs">Profile</p>
+        </div>
+        <div 
+          className={`hidden md:flex md:flex-col lg:flex lg:flex-col justify-center items-center gap-1 hover:text-blue-500 ${
+            active.help ? "text-blue-500" : "text-gray-500"
+          }`} 
+          onClick={() => handleClick('help')}
+        >
+          <Link to='/help'><Brain/> </Link>
+          <p className="text-xs">Help</p>
         </div>
       </div>
     </div>

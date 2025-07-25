@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 
-export const UseJobStore = create((set) => ({
+export const UseJobStore = create((set, get) => ({
     isLoading: false,
     job: null,
     appliedJobs : null,
@@ -54,6 +54,18 @@ export const UseJobStore = create((set) => ({
             console.log(error);
             toast.error("Something went wrong")
         }
+    },
+
+    postJob: async(data) =>{
+        set({ isLoading: true });
+        try {
+            await axiosInstance.post(`/jobs/postJob`,data);
+            toast.success("Job posted");
+            await get().getJobs();
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong")
+        }
     }
 
-}))
+}));

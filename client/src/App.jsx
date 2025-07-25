@@ -14,6 +14,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Jobs = lazy(() => import("./pages/Jobs"));
 const Help = lazy(() => import("./pages/Help"));
 const PostJob = lazy(() => import("./pages/PostJob"));
+const Notification = lazy(() => import("./pages/Notification"));
 
 function App() {
   const { theme } = UseThemeStore();
@@ -38,6 +39,7 @@ function App() {
           <Route path="/help" element={<Help />} />
           <Route path="/postJob" element={<PostJob />} />
           <Route path="/jobDetail/:jobId" element={<JobDetail />} />
+          <Route path="/notification" element={<Notification />} />
         </Routes>
 
         

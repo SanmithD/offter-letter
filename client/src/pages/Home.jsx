@@ -46,11 +46,11 @@ function Home() {
                   <h1 className="text-[22px] font-medium flex items-center " ><span className="text-blue-500" ><ArrowRight/> </span> {data?.jobTitle} </h1>
                   <p className="text-gray-500 font-medium" >{data?.company} </p>
                   <p className="text-gray-500 font-light" >{data?.role.length > 50 ? data?.role.substring(0, 50) + "..." : data?.role } </p>
-                  <div className="flex justify-between items-center my-3" >
-                    <p className="text-[18px] font-medium border-0 md:border-1 rounded-md py-1.5 " >{data?.location} </p>
-                    <p className="text-[18px] font-medium border-0 md:border-1 rounded-md py-1.5 ">{data?.place} </p>
-                    <p className="text-[18px] font-medium border-0 md:border-1 rounded-md py-1.5 ">{data?.type}</p>
-                    <p className="text-[18px] font-medium border-0 md:border-1 rounded-md py-1.5 ">{data?.salary === null ? "Not disclosed" : <span className="flex gap-1.5 items-center" ><IndianRupee/> {data?.salary}</span> } </p>
+                  <div className="flex flex-wrap justify-between items-center gap-2 my-3 space-y-1" >
+                    <p className="text-[16px] px-1 font-medium border-l-1 md:border-1 rounded-md py-1.5 md:px-2 " >{data?.location} </p>
+                    <p className="text-[16px] px-1 font-medium border-l-1 md:border-1 rounded-md py-1.5 md:px-2">{data?.place} </p>
+                    <p className="text-[16px] px-1 font-medium border-l-1 md:border-1 rounded-md py-1.5 md:px-2">{data?.type}</p>
+                    <p className="text-[16px] px-1 font-medium border-l-1 md:border-1 rounded-md py-1.5 md:px-2">{data?.salary === null ? "Not disclosed" : <span className="flex gap-1.5 items-center" ><IndianRupee/> {data?.salary}</span> } </p>
                   </div>
                   </div>
                 </div>

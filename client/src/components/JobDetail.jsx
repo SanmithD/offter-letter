@@ -36,12 +36,12 @@ function JobDetail() {
           <div>
             <div className="flex flex-col gap-1.5 mb-6 ">
               <h1 className="text-2xl font-medium ">{job?.jobTitle}</h1>
-              <p className="text-[20px] font-medium ">{job?.company} </p>
-              <p className="text-[18px] text-gray-500 font-medium ">
+              <p className="text-[18px] md:text-[20px] lg:text-[20px] font-medium ">{job?.company} </p>
+              <p className="text-[16px] text-gray-500 font-medium ">
                 Posted on {new Date(job?.createdAt).toLocaleString()}{" "}
               </p>
             </div>
-            <div className="flex justify-between items-center my-2.5 md:w-[30%] lg:w-[30%] ">
+            <div className="flex flex-wrap space-y-1 justify-between items-center my-2.5 md:w-[30%] lg:w-[30%] ">
               <h1 className="flex items-center gap-1.5 text-gray-500 border-1 rounded-md px-2.5 py-1 ">
                 <IndianRupee />{" "}
                 {job?.salary === null ? "Not disclosed" : job?.salary}{" "}
@@ -57,16 +57,16 @@ function JobDetail() {
               </h1>
             </div>
             <div className="my-3.5 border-1 rounded-md px-3 py-1.5 space-y-1.5 ">
-              <h1 className="text-[22px] font-bold ">Published By</h1>
+              <h1 className="text-[18px] font-bold ">Published By</h1>
               <div className="flex justify-center md:justify-self-start lg:justify-self-start items-center gap-2.5">
                 {job?.publisherId?.profilePic ? (
                   <img
                     src={job?.publisherId?.profilePic}
                     alt={job?.publisherId?.name}
-                    className="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-white shadow-lg"
+                    className="h-20 w-20 sm:h-25 sm:w-25 rounded-full object-cover border-4 border-white shadow-lg"
                   />
                 ) : (
-                  <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-2xl sm:text-4xl border-4 border-white shadow-lg">
+                  <div className="h-20 w-20 sm:h-25 sm:w-25 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-2xl sm:text-4xl border-4 border-white shadow-lg">
                     {job?.publisherId?.name?.[0]?.toUpperCase()}
                   </div>
                 )}
@@ -74,7 +74,7 @@ function JobDetail() {
                   <p className="text-[20px] font-medium ">
                     {job?.publisherId?.name}{" "}
                   </p>
-                  <p className="text-gray-500 text-[18px] font-medium ">
+                  <p className="text-gray-500 text-[16px] font-medium ">
                     {job?.publisherId?.bio.length > 50
                       ? job?.publisherId?.bio.substring(0, 50) + "..."
                       : job?.publisherId?.bio}{" "}
@@ -96,13 +96,13 @@ function JobDetail() {
             </div>
             <div className="px-3.5 py-1.5 mb-3 space-y-2 ">
               <h1 className="text-2xl font-bold ">Desired Skills</h1>
-              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {Array.isArray(job?.requiredSkills) &&
                 job?.requiredSkills.length > 0 ? (
                   job?.requiredSkills.map((skill, index) => (
                     <div
                       key={index}
-                      className="border-1 rounded-md px-2.5 py-1 flex justify-center items-center "
+                      className="border-1 w-fit rounded-md px-2.5 py-1 flex justify-center flex-wrap items-center "
                     >
                       <p className="text-[18px] font-medium text-gray-500">
                         {skill}{" "}
@@ -117,7 +117,7 @@ function JobDetail() {
               </div>
             </div>
             <p className="px-3.5 py-1.5 mb-3 text-[20px] font-medium ">
-              Company email : {job?.jobEmail}{" "}
+              Company email : <span className="text-gray-500 text-[16px] md:text-[20px] lg:text-[20px] " > {job?.jobEmail}</span>
             </p>
           </div>
         )}

@@ -17,7 +17,7 @@ function JobDetail() {
   }, [jobId, getJobById]);
 
   return (
-    <div className="h-screen container my-2.5 px-4 md:mx-auto lg:mx-auto md:my-5 lg:my-5 md:mb-6 lg:mb-6 ">
+    <div className="h-screen container px-4 md:mx-auto lg:mx-auto md:my-5 lg:my-5 md:mb-6 lg:mb-6 ">
       <div>
         <div className="block md:hidden lg:hidden">
           <h1 className="text-2xl flex items-center pb-4 cursor-pointer">
@@ -82,6 +82,8 @@ function JobDetail() {
                 </div>
               </div>
             </div>
+            <div className="flex flex-col md:flex-row md:justify-between " >
+              <div>
             <div className="px-3.5 py-1.5 mb-3 ">
               <h1 className="text-2xl font-bold ">Description</h1>
               <p className="text-[20px] text-gray-500 font-medium ">
@@ -119,19 +121,19 @@ function JobDetail() {
             <p className="px-3.5 py-1.5 mb-3 text-[20px] font-medium ">
               Company email : <span className="text-gray-500 text-[16px] md:text-[20px] lg:text-[20px] " > {job?.jobEmail}</span>
             </p>
-          </div>
-        )}
+              </div>
 
+            <div className="mt-4" >
         {
           appliedJobs?.response?.userId?._id === authUser?._id ? <p className="text-2xl font-medium text-center border-1 py-2 rounded-md " >Already applied</p> : (
         <div
-          className={`w-full mx-auto rounded-lg py-3 h-fit mb-6 text-center cursor-pointer bg-blue-500 hover:bg-blue-700 active:bg-blue-900 bg-${
+          className={`w-full mx-auto rounded-lg py-3 text-2xl font-medium md:px-8 h-fit mb-6 text-center cursor-pointer bg-blue-500 hover:bg-blue-700 active:bg-blue-900 bg-${
             isLoading ? "blue-300" : "blue-500"
           }`}
           disabled={isLoading ? true : false}
           onClick={() => document.getElementById("my_modal_1").showModal()}
         >
-          <button className="text-2xl font-bold" >
+          <button className="cursor-pointer" >
             Apply
           </button>
           <dialog id="my_modal_1" className="modal">
@@ -142,6 +144,10 @@ function JobDetail() {
         </div>
           )
         }
+        </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -11,11 +11,25 @@ export const UseAuthStore = create((set) =>({
 
     signup: async(data) =>{
         set({ isSignup: true });
+        console.log(data);
         try {
-            const response = await axiosInstance.post('/auth/signup',data);
-            console.log(response.data);
+            const response = await axiosInstance.post('/auth/signup', data,{
+                headers: {
+                    'Content-Type' : 'multipart/form-data'
+                }
+            });
+            if(response.data.success) {
+                localStorage.setItem('token', response.data.token);
+                set({ authUser: response.data.data, isSignup: false, success: true });
+                toast.success("Signup successful");
+            } else {
+                set({ isSignup: false });
+                toast.error(response.data.message || "Signup failed");
+            }
         } catch (error) {
             console.log(error);
+            set({ isSignup: false });
+            toast.error("Something went wrong")
         }
     },
 

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { upload } from '../config/cloud.config.js';
+import cloudinary from '../config/cloud.config.js';
 import { generateToken } from '../config/token.config.js';
 import { userModel } from '../model/user.model.js';
 import { errorFunction } from '../utils/error.util.js';
@@ -22,6 +22,8 @@ export const signup = async(req, res) => {
         experience 
     } = req.body;
 
+    console.log("profile url",profilePic)
+
     if(!email || !password || !name || !title || !phone || !dob || !address || !college || !marks){
         return errorFunction(400, false, "All required fields must be provided", res);
     }
@@ -34,24 +36,19 @@ export const signup = async(req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let profilePicUrl = null;
-        let resumeUrl = null;
+        let profilePicUrl = '';
+        let resumeUrl = '';
         let skill = [];
 
         if(typeof skills === 'string'){
-            skill = skills.split(",").map(skill => skill.trim()).filter(skill => skill.length > 0 );
+            skill = skills.split(",").map(skill => skill[0].toLocaleUpperCase().trim()).filter(skill => skill.length > 0 );
         }
 
-        if(profilePic) {
+        if(profilePic.name) {
             try {
-                const profileUpload = await upload.uploader.upload(profilePic, {
+                const profileUpload = await cloudinary.uploader.upload(profilePic.name,{
                     resource_type: 'image',
-                    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-                    folder: 'profile_pics',
-                    transformation: [
-                        { width: 500, height: 500, crop: 'fill' },
-                        { quality: 'auto' }
-                    ]
+                    allowed_formats: ['jpg', 'jpeg','png', 'webp']
                 });
                 profilePicUrl = profileUpload.secure_url;
             } catch (uploadError) {
@@ -60,17 +57,17 @@ export const signup = async(req, res) => {
             }
         }
 
-        // try {
-        //     const resumeUpload = await upload.uploader.upload(resume, {
-        //         resource_type: 'raw',
-        //         allowed_formats: ['pdf', 'doc', 'docx'],
-        //         folder: 'resumes'
-        //     });
-        //     resumeUrl = resumeUpload.secure_url;
-        // } catch (uploadError) {
-        //     console.error('Resume upload error:', uploadError);
-        //     return errorFunction(400, false, "Failed to upload resume. Please ensure it's a valid PDF or DOC file", res);
-        // }
+        try {
+            const resumeUpload = await cloudinary.uploader.upload(resume, {
+                resource_type: 'raw',
+                allowed_formats: ['pdf', 'doc', 'docx'],
+                folder: 'resumes'
+            });
+            resumeUrl = resumeUpload.secure_url;
+        } catch (uploadError) {
+            console.error('Resume upload error:', uploadError);
+            return errorFunction(400, false, "Failed to upload resume. Please ensure it's a valid PDF or DOC file", res);
+        }
 
         const newUser = new userModel({
             email: email.toLowerCase().trim(),
@@ -81,7 +78,7 @@ export const signup = async(req, res) => {
             phone: phone.trim(),
             dob: new Date(dob),
             address: address.trim(),
-            // resume: resumeUrl,
+            resume: resumeUrl,
             resume,
             bio: bio?.trim() || '',
             skills: skill,

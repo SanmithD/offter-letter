@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import JobDetail from "./components/JobDetail";
 import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
@@ -18,16 +18,23 @@ const Notification = lazy(() => import("./pages/Notification"));
 
 function App() {
   const { theme } = UseThemeStore();
+  const location = useLocation();
+
+  const hideNavbar = ["/signup", "/login"];
+  const isNavbarVisible = hideNavbar.includes(location.pathname);
 
   return (
     <div data-theme={theme} >
       <Toaster />
       <Suspense fallback={<Loader />}>
         {/* Desktop Navbar */}
+        { !isNavbarVisible && (
+
         <div className="hidden sm:block sticky top-0 z-50 backdrop-blur-lg bg-gray-800 ">
           <Navbar />
           <hr />
         </div>
+        )}
 
         <Routes>
           <Route path="/" element={<Home />} />

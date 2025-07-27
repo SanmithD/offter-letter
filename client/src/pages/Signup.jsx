@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import { UseAuthStore } from "../store/UserStore";
 
 const initial = {
@@ -34,12 +35,13 @@ const initial = {
 };
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [showPwd, setShowPwd] = useState(false);
   const [data, setData] = useState(initial);
   const [errors, setErrors] = useState({});
   const [previewPic, setPreviewPic] = useState(null);
   const [step, setStep] = useState(1);
-  const { signup, isSignup } = UseAuthStore();
+  const { signup, isSignup, success } = UseAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,16 +65,12 @@ export default function Signup() {
       setPreviewPic(URL.createObjectURL(file));
     }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      setData((d) => ({ 
-        ...d, 
-        [field]: file,
-        [`${field}Name`]: file.name 
-      }));
-      toast.success("File selected");
-    };
+    setData((d) => ({ 
+      ...d, 
+      [field]: file,
+      [`${field}Name`]: file.name 
+    }));
+    toast.success("File selected");
   };
 
   const validate = () => {
@@ -87,11 +85,11 @@ export default function Signup() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (ev) => {
-    ev.preventDefault();
-    if (!validate()) return;
-    console.log(data.profilePic)
-    console.log(data.resume)
+   const handleSignupSubmit = async () => {
+    if (!validate()) {
+      return toast.error("Fill requirements correctly");
+    }
+    
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('email', data.email);
@@ -102,13 +100,22 @@ export default function Signup() {
     formData.append('experience', data.experience);
     formData.append('dob', data.dob);
     formData.append('bio', data.bio);
-    formData.append('profilePic', data.profilePic);
-    formData.append('resume', data.resume);
     formData.append('address', data.address);
     formData.append('college', data.college);
     formData.append('marks', data.marks);
-    formData.append('profilePic', data.profilePic);
+
+    if (data.profilePic) formData.append('profilePic', data.profilePic);
+    if (data.resume) formData.append('resume', data.resume);
+
     await signup(formData);
+    if(success){
+      navigate('/');
+    }
+  };
+
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();    
+    handleSignupSubmit();
   };
 
   const steps = [
@@ -129,7 +136,7 @@ export default function Signup() {
     <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-3xl">
         <div className="flex items-center justify-between mb-6">
-          <img src="/vite.svg" alt="logo" className="h-10 w-10" />
+          <img src="/offerLogo.png" alt="logo" className="h-10 w-10 rounded-lg " />
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
             OfferLetter
           </h1>
@@ -314,7 +321,7 @@ export default function Signup() {
             {currentFields.includes("resume") && (
               <FileUpload
                 label="Resume (PDF)"
-                accept=".pdf"
+                accept=".pdf,.doc,.docx"
                 onChange={(e) => handleFile(e, "resume")}
               />
             )}
@@ -339,12 +346,15 @@ export default function Signup() {
                 Next
               </button>
             ) : (
-              <button type="submit" className={`${btnPrimary} ml-auto`}>
+              <button type="button" onClick={handleSignupSubmit} className={`${btnPrimary} ml-auto`}>
                 {isSignup ? "Creating account" : "Create account"}
               </button>
             )}
           </div>
         </form>
+        <div className="flex items-center text-[18px] font-medium " >
+          Already have an account ? <span><Link to='/login'>Login</Link> </span>
+        </div>
       </div>
     </main>
   );
@@ -365,7 +375,7 @@ function Input({
       <label className="block mb-1 text-sm font-medium text-slate-700 dark:text-slate-200">
         {label}
       </label>
-      <div className="relative border h-fit py-2  ">
+      <div className="relative border h-fit py-2 flex items-center ">
         {Icon && (
           <Icon className="absolute left-3 -translate-y-1/2 h-5 w-5 text-slate-400" />
         )}
@@ -392,7 +402,7 @@ function Input({
 
 function TextArea({ label, name, value, onChange }) {
   return (
-    <div className="md:col-span-2 ">
+    <div className="md:col-span-2">
       <label className="block mb-1 text-sm font-medium text-slate-700 dark:text-slate-200">
         {label}
       </label>

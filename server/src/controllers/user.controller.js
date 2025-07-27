@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import cloudinary from '../config/cloud.config.js';
 import { generateToken } from '../config/token.config.js';
 import { userModel } from '../model/user.model.js';
 import { errorFunction } from '../utils/error.util.js';
@@ -9,12 +8,10 @@ export const signup = async(req, res) => {
         email, 
         name, 
         title, 
-        profilePic, 
         password, 
         phone, 
         dob, 
         address, 
-        resume, 
         bio, 
         skills = [], 
         college, 
@@ -22,7 +19,11 @@ export const signup = async(req, res) => {
         experience 
     } = req.body;
 
-    console.log("profile url",profilePic)
+    const profilePicFile = req.files['profilePic']?.[0];
+    const resumeFile = req.files['resume']?.[0];
+
+    const profilePicUrl = profilePicFile?.path || '';
+    const resumeUrl = resumeFile?.path || '';
 
     if(!email || !password || !name || !title || !phone || !dob || !address || !college || !marks){
         return errorFunction(400, false, "All required fields must be provided", res);
@@ -35,39 +36,36 @@ export const signup = async(req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        let profilePicUrl = '';
-        let resumeUrl = '';
         let skill = [];
 
         if(typeof skills === 'string'){
-            skill = skills.split(",").map(skill => skill[0].toLocaleUpperCase().trim()).filter(skill => skill.length > 0 );
+            skill = skills.split(",").map(skill => skill.toLocaleUpperCase().trim()).filter(skill => skill.length > 0 );
         }
 
-        if(profilePic.name) {
-            try {
-                const profileUpload = await cloudinary.uploader.upload(profilePic.name,{
-                    resource_type: 'image',
-                    allowed_formats: ['jpg', 'jpeg','png', 'webp']
-                });
-                profilePicUrl = profileUpload.secure_url;
-            } catch (uploadError) {
-                console.error('Profile picture upload error:', uploadError);
-                return errorFunction(400, false, "Failed to upload profile picture", res);
-            }
-        }
+        // if(profilePic.name) {
+        //     try {
+        //         const profileUpload = await upload.single(profilePic.name,{
+        //             resource_type: 'image',
+        //             allowed_formats: ['jpg', 'jpeg','png', 'webp']
+        //         });
+        //         profilePicUrl = profileUpload;
+        //     } catch (uploadError) {
+        //         console.error('Profile picture upload error:', uploadError);
+        //         return errorFunction(400, false, "Failed to upload profile picture", res);
+        //     }
+        // }
 
-        try {
-            const resumeUpload = await cloudinary.uploader.upload(resume, {
-                resource_type: 'raw',
-                allowed_formats: ['pdf', 'doc', 'docx'],
-                folder: 'resumes'
-            });
-            resumeUrl = resumeUpload.secure_url;
-        } catch (uploadError) {
-            console.error('Resume upload error:', uploadError);
-            return errorFunction(400, false, "Failed to upload resume. Please ensure it's a valid PDF or DOC file", res);
-        }
+        // try {
+        //     const resumeUpload = await cloudinary.uploader.upload(resume, {
+        //         resource_type: 'raw',
+        //         allowed_formats: ['pdf', 'doc', 'docx'],
+        //         folder: 'resumes'
+        //     });
+        //     resumeUrl = resumeUpload.secure_url;
+        // } catch (uploadError) {
+        //     console.error('Resume upload error:', uploadError);
+        //     return errorFunction(400, false, "Failed to upload resume. Please ensure it's a valid PDF or DOC file", res);
+        // }
 
         const newUser = new userModel({
             email: email.toLowerCase().trim(),
@@ -78,8 +76,7 @@ export const signup = async(req, res) => {
             phone: phone.trim(),
             dob: new Date(dob),
             address: address.trim(),
-            resume: resumeUrl,
-            resume,
+            resume : resumeUrl,
             bio: bio?.trim() || '',
             skills: skill,
             college: college.trim(),
@@ -92,11 +89,12 @@ export const signup = async(req, res) => {
         const userResponse = savedUser.toObject();
         delete userResponse.password;
 
-        generateToken(savedUser._id, res);
+        const token = generateToken(savedUser._id, res);
         res.status(201).json({
             success: true,
             message: "User registered successfully",
-            data: userResponse
+            data: userResponse,
+            token
         });
 
     } catch (error) {

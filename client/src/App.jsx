@@ -4,6 +4,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import JobDetail from "./components/JobDetail";
 import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { UseThemeStore } from "./store/UseThemeStore";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -24,35 +25,91 @@ function App() {
   const isNavbarVisible = hideNavbar.includes(location.pathname);
 
   return (
-    <div data-theme={theme} >
+    <div data-theme={theme}>
       <Toaster />
       <Suspense fallback={<Loader />}>
         {/* Desktop Navbar */}
-        { !isNavbarVisible && (
-
-        <div className="hidden sm:block sticky top-0 z-50 backdrop-blur-lg bg-gray-800 ">
-          <Navbar />
-          <hr />
-        </div>
+        {!isNavbarVisible && (
+          <div className="hidden sm:block sticky top-0 z-50 backdrop-blur-lg bg-gray-800 ">
+            <Navbar />
+            <hr />
+          </div>
         )}
 
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/appliedJobs" element={<AppliedJobs />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/postJob" element={<PostJob />} />
-          <Route path="/jobDetail/:jobId" element={<JobDetail />} />
-          <Route path="/notification" element={<Notification />} />
+          <Route
+            path="/appliedJobs"
+            element={
+              <ProtectedRoute>
+                <AppliedJobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/jobs"
+            element={
+              <ProtectedRoute>
+                <Jobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <ProtectedRoute>
+                <Help />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/postJob"
+            element={
+              <ProtectedRoute>
+                <PostJob />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/jobDetail/:jobId"
+            element={
+              <ProtectedRoute>
+                <JobDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notification"
+            element={
+              <ProtectedRoute>
+                <Notification />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
 
-        
-        <div className="block sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-gray-800 ">
-          <Navbar />
-        </div>
+        {!isNavbarVisible && (
+          <div className="block sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-gray-800 ">
+            <Navbar />
+          </div>
+        )}
       </Suspense>
     </div>
   );

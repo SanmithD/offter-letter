@@ -237,6 +237,7 @@ function Profile() {
                   Edit Profile
                 </button>
                 <button className="w-full cursor-pointer flex justify-center items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-500 transition-colors duration-200 font-medium">
+                  <a href={authUser?.resume}/>
                   <span>
                     <DownloadIcon />
                   </span>{" "}

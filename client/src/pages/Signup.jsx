@@ -41,37 +41,13 @@ export default function Signup() {
   const [errors, setErrors] = useState({});
   const [previewPic, setPreviewPic] = useState(null);
   const [step, setStep] = useState(1);
-  const { signup, isSignup, success } = UseAuthStore();
+  const { signup, isSignup } = UseAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((d) => ({ ...d, [name]: value }));
     if (value) setErrors((e) => ({ ...e, [name]: undefined }));
   };
-
-  // const handleFile = (e, field) => {
-  //   const file = e.target.files?.[0];
-  //   if (field === "resume") {
-  //     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-  //     if (!validTypes.includes(file.type)) {
-  //       return toast.error("Please select a PDF, DOC, or DOCX file for resume");
-  //     }
-  //   } else if (field === "profilePic") {
-  //     if (!file.type.startsWith('image/')) {
-  //       return toast.error("Please select an image file for profile picture");
-  //     }
-  //   }
-  //   if (field === "profilePic") {
-  //     setPreviewPic(URL.createObjectURL(file));
-  //   }
-
-  //   setData((d) => ({ 
-  //     ...d, 
-  //     [field]: file,
-  //     [`${field}Name`]: file.name 
-  //   }));
-  //   toast.success("File selected");
-  // };
 
   const handleFile = (e, field) => {
   const file = e.target.files?.[0];
@@ -126,9 +102,7 @@ export default function Signup() {
     if (data.resume) formData.append('resume', data.resume);
 
     await signup(formData);
-    if(success){
-      navigate('/');
-    }
+    navigate('/')
   };
 
   const handleSubmit = async (ev) => {

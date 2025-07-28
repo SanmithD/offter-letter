@@ -17,6 +17,7 @@ const Jobs = lazy(() => import("./pages/Jobs"));
 const Help = lazy(() => import("./pages/Help"));
 const PostJob = lazy(() => import("./pages/PostJob"));
 const Notification = lazy(() => import("./pages/Notification"));
+const UserDetail = lazy(() => import('./components/UserDetail'));
 
 function App() {
   const { theme } = UseThemeStore();
@@ -85,6 +86,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PostJob />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/userDetail/:userId"
+            element={
+              <ProtectedRoute>
+                <UserDetail />
               </ProtectedRoute>
             }
           />

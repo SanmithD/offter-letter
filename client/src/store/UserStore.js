@@ -5,9 +5,11 @@ import { axiosInstance } from "../lib/axios";
 export const UseAuthStore = create((set) => ({
   isSignup: false,
   isLogin: false,
+  isLoading: false,
   success: false,
   isProfile: false,
   authUser: null,
+  user: null,
   isCheckingAuth: false,
 
   checkAuth: async () => {
@@ -100,6 +102,7 @@ export const UseAuthStore = create((set) => ({
       toast.error("Something went wrong");
     }
   },
+
   profile: async () => {
     try {
       const response = await axiosInstance.get("/auth/profile");
@@ -109,4 +112,16 @@ export const UseAuthStore = create((set) => ({
       toast.error(error.response?.data?.message);
     }
   },
+
+  getUserById: async(userId) =>{
+    set({ isLoading: true });
+    try {
+      const response = await axiosInstance.get(`/auth/getUser/${userId}`);
+      set({ isLoading: false, user: response.data.response });
+    } catch (error) {
+      console.log(error);
+      set({ isLoading: false });
+      toast.error("Something went wrong");
+    }
+  }
 }));

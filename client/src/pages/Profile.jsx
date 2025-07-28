@@ -94,11 +94,13 @@ function Profile() {
             <div className="flex items-center gap-2 md:justify-self-start space-y-0.5 md:space-y-0 lg:space-y-0 ">
               <div className="relative ">
                 {authUser?.profilePic ? (
-                  <img
-                    src={authUser?.profilePic}
-                    alt={authUser?.name}
-                    className="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-white shadow-lg"
-                  />
+                  <a href={authUser?.profilePic} target="_blank" >
+                    <img
+                      src={authUser?.profilePic}
+                      alt={authUser?.name}
+                      className="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-white shadow-lg"
+                    />
+                  </a>
                 ) : (
                   <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-2xl sm:text-4xl border-4 border-white shadow-lg">
                     {authUser?.name?.[0]?.toUpperCase()}

@@ -9,6 +9,7 @@ import { dbConnect } from "./src/config/db.config.js";
 import { authorized } from "./src/middleware/auth.middleware.js";
 import applyRouter from "./src/routes/apply.route.js";
 import jobRouter from "./src/routes/job.route.js";
+import notificationRouter from "./src/routes/notification.route.js";
 import userRouter from "./src/routes/user.route.js";
 import { errorFunction } from "./src/utils/error.util.js";
 import { systemInstructions } from "./src/utils/system.instructions.js";
@@ -41,6 +42,7 @@ app.use(limiter);
 app.use("/api/auth", userRouter);
 app.use("/api/jobs", jobRouter);
 app.use("/api/apply", applyRouter);
+app.use("/api/notification", notificationRouter);
 
 app.post("/api/agent", authorized, async (req, res) => {
   try {

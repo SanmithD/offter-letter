@@ -71,7 +71,7 @@ function JobDetail() {
                   </div>
                 )}
                 <div>
-                  <p className="text-[20px] font-medium ">
+                  <p className="text-[20px] font-medium hover:underline cursor-pointer" onClick={()=>navigate(`/userDetail/${job?.publisherId?._id}`)} >
                     {job?.publisherId?.name}{" "}
                   </p>
                   <p className="text-gray-500 text-[16px] font-medium ">

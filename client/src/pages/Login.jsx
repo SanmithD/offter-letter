@@ -5,7 +5,7 @@ import { UseAuthStore } from "../store/UserStore";
 
 function Login() {
   const navigate = useNavigate();
-  const { isLogin, login, success } = UseAuthStore();
+  const { isLogin, login } = UseAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -14,16 +14,14 @@ function Login() {
 
   const handleLogin = async() =>{
     await login(formData);
-    if(success){
       navigate('/');
-    }
   }
 
   return (
     <div className="container px-3 " >
       <div className="h-fit py-3 flex justify-between items-center " >
         <div className=" flex justify-center items-center" >
-          <img src="vite.svg" alt="logo" className="size-[30px] md:size-[50px] lg:size-[50px] " />
+          <img src="offerLogo.png" alt="logo" className="size-[30px] md:size-[50px] lg:size-[50px] " />
         </div>
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold " >OfferLetter</h1>
         <div className="place-content-end" >

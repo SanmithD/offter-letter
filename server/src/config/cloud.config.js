@@ -25,8 +25,7 @@ const storage = new CloudinaryStorage({
         ? ['pdf', 'doc', 'docx']
         : ['jpg', 'jpeg', 'png', 'webp'],
       public_id: file.originalname.split('.')[0],
-    },
-    access_mode = 'public'
+    }
   },
 });
 const upload = multer({ storage });

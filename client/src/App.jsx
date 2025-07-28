@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { Route, Routes, useLocation } from "react-router-dom";
+import Footer from "./components/Footer";
 import JobDetail from "./components/JobDetail";
 import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
@@ -104,7 +105,9 @@ function App() {
             }
           />
         </Routes>
-
+        {!isNavbarVisible && (
+        <Footer/>
+        )}
         {!isNavbarVisible && (
           <div className="block sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-gray-800 ">
             <Navbar />

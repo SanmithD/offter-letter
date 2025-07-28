@@ -51,7 +51,9 @@ function Profile() {
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
+        <div className="block md:hidden " >
         <Header name={"Profile"} />
+        </div>
         <div className="pt-[30px] md:pt-10 lg:pt-10 rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
           <div className="relative px-6 pb-6">
             <div className="flex items-center gap-2 md:justify-self-start space-y-0.5 md:space-y-0 lg:space-y-0 ">

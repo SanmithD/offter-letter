@@ -26,7 +26,7 @@ const initial = {
   phone: "",
   dob: "",
   address: "",
-  resume: "",
+  resume: null,
   bio: "",
   skills: "",
   college: "",
@@ -49,29 +49,47 @@ export default function Signup() {
     if (value) setErrors((e) => ({ ...e, [name]: undefined }));
   };
 
-  const handleFile = (e, field) => {
-    const file = e.target.files?.[0];
-    if (field === "resume") {
-      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (!validTypes.includes(file.type)) {
-        return toast.error("Please select a PDF, DOC, or DOCX file for resume");
-      }
-    } else if (field === "profilePic") {
-      if (!file.type.startsWith('image/')) {
-        return toast.error("Please select an image file for profile picture");
-      }
-    }
-    if (field === "profilePic") {
-      setPreviewPic(URL.createObjectURL(file));
-    }
+  // const handleFile = (e, field) => {
+  //   const file = e.target.files?.[0];
+  //   if (field === "resume") {
+  //     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+  //     if (!validTypes.includes(file.type)) {
+  //       return toast.error("Please select a PDF, DOC, or DOCX file for resume");
+  //     }
+  //   } else if (field === "profilePic") {
+  //     if (!file.type.startsWith('image/')) {
+  //       return toast.error("Please select an image file for profile picture");
+  //     }
+  //   }
+  //   if (field === "profilePic") {
+  //     setPreviewPic(URL.createObjectURL(file));
+  //   }
 
-    setData((d) => ({ 
-      ...d, 
-      [field]: file,
-      [`${field}Name`]: file.name 
-    }));
-    toast.success("File selected");
-  };
+  //   setData((d) => ({ 
+  //     ...d, 
+  //     [field]: file,
+  //     [`${field}Name`]: file.name 
+  //   }));
+  //   toast.success("File selected");
+  // };
+
+  const handleFile = (e, field) => {
+  const file = e.target.files?.[0];
+  
+  if (field === "resume") {
+    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!validTypes.includes(file.type)) {
+      return toast.error("Please select a PDF, DOC, or DOCX file for resume");
+    }
+    setData(prev => ({ ...prev, resume: file }));
+  } else if (field === "profilePic") {
+    if (!file.type.startsWith('image/')) {
+      return toast.error("Please select an image file for profile picture");
+    }
+    setData(prev => ({ ...prev, profilePic: file }));
+    setPreviewPic(URL.createObjectURL(file));
+  }
+}
 
   const validate = () => {
     const e = {};

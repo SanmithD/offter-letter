@@ -11,6 +11,7 @@ import {
   User2Icon
 } from "lucide-react";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { ProfilePic } from "../components/skeletons/ProfileSkeleton";
@@ -46,6 +47,40 @@ function Profile() {
         <ProfilePic />
       </div>
     );
+  }
+
+  const handleResumeDownload = async ({ resumeUrl }) => {
+    try {
+      // Show loading state
+      toast.loading('Preparing download...');
+      
+      // Fetch the file
+      const response = await fetch(resumeUrl);
+      
+      if (!response.ok) {
+        throw new Error('Failed to download file');
+      }
+      
+      const blob = await response.blob();
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      
+      document.body.appendChild(link);
+      link.click();
+      
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.dismiss();
+      toast.success('Download started!');
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.dismiss();
+      toast.error('Failed to download file');
+    }
   }
 
   return (
@@ -238,7 +273,7 @@ function Profile() {
                 <button className="w-full cursor-pointer px-4 py-2 bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium">
                   Edit Profile
                 </button>
-                <button className="w-full cursor-pointer flex justify-center items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-500 transition-colors duration-200 font-medium">
+                <button onClick={()=>handleResumeDownload(authUser?.resume)} className="w-full cursor-pointer flex justify-center items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-500 transition-colors duration-200 font-medium">
                   <a href={authUser?.resume}/>
                   <span>
                     <DownloadIcon />

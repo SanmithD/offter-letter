@@ -12,6 +12,9 @@ const notificationSchema = new mongoose.Schema({
     publisherId: {
         type : mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    message: {
+        type: String
     }
 },{ timestamps: true });
 

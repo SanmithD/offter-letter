@@ -8,6 +8,7 @@ export const appliedNotification = async(userId, publisherId, jobId ) =>{
             userId,
             jobId,
             publisherId,
+            message: ''
         });
 
         if(!notification) return errorFunction(400, false, "Invalid request", res);
@@ -19,14 +20,14 @@ export const appliedNotification = async(userId, publisherId, jobId ) =>{
 }
 
 export const applyView = async(req, res) =>{
-    const userId = req.user_id;
+    const userId = req.user._id;
     try {
-        const response = await notificationModel.findOne({ userId }).populate("jobId").sort({ createdAt: -1 })
+        const response = await notificationModel.find({ userId }).populate("jobId").sort({ createdAt: -1 })
         if(!response) return errorFunction(404, false, "Not found", res);
-
         res.status(200).json({
             success: true,
-            message: `Your ${response.jobId.title} application has been view by the ${response.jobId.company} member `
+            message: "Application viewed",
+            response
         });
     } catch (error) {
         console.log(error);
@@ -50,3 +51,41 @@ export const getNotification = async(req, res) =>{
         errorFunction(500, false, "Server error",res);
     }
 }
+
+export const notify = async(req, res) =>{
+    const { jobId } = req.params;
+    const publisherId = req.user._id;
+    try {
+        const { userId } = await applyModel.findOne({ jobId, publisherId });
+        const data = await userRes(userId, jobId);
+        res.status(200).json({
+            success: true,
+            message: "Your application view by the member",
+            data
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const userRes = async(userId, jobId) =>{
+    try {
+        const response = await notificationModel.findOne({ userId, jobId });
+        if(!response) throw new Error("Not found")
+        return response;
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+// const getInfo = async(userId, publisherId, jobId) =>{
+//     try {
+//         const response = await notificationModel.findOne({ userId, jobId });
+//         if(!response) throw new Error("Not found");
+//         return response;
+//     } catch (error) {
+//         console.log(error);
+//         throw new Error("Server error");
+//     }
+// }

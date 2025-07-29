@@ -5,11 +5,12 @@ import { axiosInstance } from "../lib/axios";
 export const UseNotificationStore = create((set) =>({
     isLoading: false,
     notification: null,
+    res: null,
 
-    getInfo: async() =>{
+    getInfo: async(jobId) =>{
         set({ isLoading: true });
         try {
-            const response = await axiosInstance.get(`/notification/inform`);
+            const response = await axiosInstance.get(`/notification/inform/${jobId}`);
             console.log(response.data);
             set({ notification: response.data.response });
         } catch (error) {
@@ -27,6 +28,18 @@ export const UseNotificationStore = create((set) =>({
         } catch (error) {
             console.log(error);
             toast.error("Something went wrong")
+        }
+    },
+
+    getRes : async() =>{
+        set({ isLoading: true });
+        try {
+            const response = await axiosInstance.get(`/notification/response`);
+            set({ res: response.data.response });
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong");
+            set({ isLoading: false });
         }
     }
 }))

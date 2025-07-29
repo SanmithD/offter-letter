@@ -39,7 +39,7 @@ function PostJob() {
           <label className="text-[18px] md:text-[20px] lg:text-[20px] font-medium tracking-wide " >Job Title</label>
           <input 
             type="text" 
-            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-12 "
             value={postData.jobTitle} 
             name="jobTitle" 
             placeholder="Job title..." 
@@ -52,7 +52,7 @@ function PostJob() {
           <input 
             type="text" 
             value={postData.company} 
-            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-12 "
             name="company" 
             placeholder="Company name..." 
             onChange={handleChange} 
@@ -63,7 +63,7 @@ function PostJob() {
           <label className="text-[18px] md:text-[20px] lg:text-[20px] font-medium tracking-wide ">Company Email</label>
           <input 
             type="email" 
-            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-12 "
             value={postData.jobEmail} 
             name="jobEmail" 
             placeholder="Company email..." 
@@ -99,7 +99,7 @@ function PostJob() {
           <label className="text-[18px] md:text-[20px] lg:text-[20px] font-medium tracking-wide ">Required skills</label>
           <input 
             type="text" 
-            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-12 "
             value={postData.requiredSkills} 
             name="requiredSkills" 
             placeholder="React, Node.js, MongoDB..." 
@@ -147,7 +147,7 @@ function PostJob() {
           <select 
             value={postData.type} 
             name="type" 
-            className="border-1 pl-3 bg-gray-800 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 bg-gray-800 py-1 rounded-md outline-0 md:h-12 "
             onChange={handleChange}
           >
             <option value="">Select job type</option>
@@ -166,7 +166,7 @@ function PostJob() {
             type="text" 
             value={postData.location} 
             name="location" 
-            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-12 "
             placeholder="Company location..." 
             onChange={handleChange} 
           />
@@ -178,7 +178,7 @@ function PostJob() {
             type="text" 
             value={postData.salary} 
             name="salary" 
-            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-10 lg:h-10 "
+            className="border-1 pl-3 py-1 rounded-md outline-0 md:h-12 "
             placeholder="30000 per month" 
             onChange={handleChange} 
           />

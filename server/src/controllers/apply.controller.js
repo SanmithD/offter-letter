@@ -40,7 +40,7 @@ export const getAppliedJobs = async(req, res) =>{
     if(!userId) return errorFunction(403, false, "Unauthorized", res);
 
     try {
-        const response = await applyModel.find({ publisherId : userId }).select("-publisherId").populate("userId").populate("jobId").sort({ createdAt: -1 });
+        const response = await applyModel.find({ userId }).select("-publisherId").populate("userId").populate("jobId").sort({ createdAt: -1 });
         if(!response) return errorFunction(400, false, "Not found", res);
 
         res.status(200).json({

@@ -25,7 +25,7 @@ function AppliedJobs() {
             appliedJobs?.response.map((data, index) => (
               <div key={data._id || index} className="p-4 mb-2 hover:bg-gray-400 cursor-pointer " onClick={() => navigate(`/jobDetail/${data.jobId?._id}`) } >
                 <div>
-                  <h1 className="text-lg font-semibold">{data.jobId?.jobTitle}</h1>
+                  <h1 className="text-lg font-semibold hover:underline" onClick={()=>navigate(`/jobDetail/${data?.jobId?._id}`)} >{data.jobId?.jobTitle}</h1>
                   <p className="text-gray-600">
                     Applied on {new Date(data.createdAt).toLocaleDateString()}
                   </p>

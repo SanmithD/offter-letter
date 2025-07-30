@@ -364,7 +364,7 @@ function Input({
 }) {
   return (
     <div>
-      <label className="block mb-1 text-sm font-medium text-slate-700 dark:text-slate-200">
+      <label className="block mb-1 text-sm font-medium">
         {label}
       </label>
       <div className="relative border h-fit py-2 flex items-center ">
@@ -395,7 +395,7 @@ function Input({
 function TextArea({ label, name, value, onChange }) {
   return (
     <div className="md:col-span-2">
-      <label className="block mb-1 text-sm font-medium text-slate-700 dark:text-slate-200">
+      <label className="block mb-1 text-sm font-medium">
         {label}
       </label>
       <textarea

@@ -20,8 +20,7 @@ dbConnect();
 
 app.use(
   cors({
-    // origin: process.env.NODE_ENV === 'production' ? process.env.CLIENT_URL : [process.env.CLIENT_URL, "http://localhost:5173/"].filter(Boolean),
-    origin: "http://localhost:5173",
+    origin: ['http://localhost:5173'],
     methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -38,6 +37,10 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+
+app.get('/',(req, res)=>{
+  res.send("Hello world")
+});
 
 app.use("/api/auth", userRouter);
 app.use("/api/jobs", jobRouter);

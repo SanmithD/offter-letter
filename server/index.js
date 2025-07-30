@@ -20,7 +20,7 @@ dbConnect();
 
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['https://offter-letter-client.vercel.app'],
     methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
     credentials: true,
   })

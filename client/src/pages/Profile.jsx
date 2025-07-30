@@ -8,13 +8,14 @@ import {
   School2,
   Share2,
   Sun,
-  User2Icon
+  User2Icon,
 } from "lucide-react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { ProfilePic } from "../components/skeletons/ProfileSkeleton";
+import UpdateProfile from "../components/UpdateProfile";
 import { UseAuthStore } from "../store/UserStore";
 import { UseThemeStore } from "../store/UseThemeStore";
 
@@ -34,12 +35,12 @@ function Profile() {
     }
   };
 
-  const handleDelete = async() =>{
+  const handleDelete = async () => {
     await deleteUser();
-    if(success){
-      navigate('/signup')
+    if (success) {
+      navigate("/signup");
     }
-  }
+  };
 
   if (!authUser) {
     return (
@@ -52,49 +53,48 @@ function Profile() {
   const handleResumeDownload = async ({ resumeUrl }) => {
     try {
       // Show loading state
-      toast.loading('Preparing download...');
-      
+      toast.loading("Preparing download...");
+
       // Fetch the file
       const response = await fetch(resumeUrl);
-      
+
       if (!response.ok) {
-        throw new Error('Failed to download file');
+        throw new Error("Failed to download file");
       }
-      
+
       const blob = await response.blob();
-      
+
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      
+
       document.body.appendChild(link);
       link.click();
-      
+
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
+
       toast.dismiss();
-      toast.success('Download started!');
-      
+      toast.success("Download started!");
     } catch (error) {
-      console.error('Download error:', error);
+      console.error("Download error:", error);
       toast.dismiss();
-      toast.error('Failed to download file');
+      toast.error("Failed to download file");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="block md:hidden " >
-        <Header name={"Profile"} />
+        <div className="block md:hidden ">
+          <Header name={"Profile"} />
         </div>
         <div className="pt-[30px] md:pt-10 lg:pt-10 rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
           <div className="relative px-6 pb-6">
             <div className="flex items-center gap-2 md:justify-self-start space-y-0.5 md:space-y-0 lg:space-y-0 ">
               <div className="relative ">
                 {authUser?.profilePic ? (
-                  <a href={authUser?.profilePic} target="_blank" >
+                  <a href={authUser?.profilePic} target="_blank">
                     <img
                       src={authUser?.profilePic}
                       alt={authUser?.name}
@@ -186,8 +186,7 @@ function Profile() {
                 </h2>
                 <div className="flex items-center justify-between p-4 rounded-xl border-2 border-dashed border-gray-300">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                    </div>
+                    <div className="p-2 bg-red-100 rounded-lg"></div>
                     <div>
                       <p className="font-medium">Resume.pdf</p>
                       <p className="text-sm text-gray-500">Click to view</p>
@@ -264,19 +263,46 @@ function Profile() {
               </div>
             )}
 
-            <div className="flex items-center gap-2" >
-              <h1 className="text-[22px] font-bold font-stretch-expanded tracking-wide " >Hire candidates :</h1>
-              <button className="px-4 py-1.5 text-[20px] font-bold border-1 rounded-md cursor-pointer hover:border-blue-500 " onClick={()=> navigate('/postJob')} >Post job</button>
+            <div className="flex items-center gap-2">
+              <h1 className="text-[22px] font-bold font-stretch-expanded tracking-wide ">
+                Hire candidates :
+              </h1>
+              <button
+                className="px-4 py-1.5 text-[20px] font-bold border-1 rounded-md cursor-pointer hover:border-blue-500 "
+                onClick={() => navigate("/postJob")}
+              >
+                Post job
+              </button>
             </div>
 
             <div className="rounded-2xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
               <div className="space-y-3">
-                <button className="w-full cursor-pointer px-4 py-2 bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium">
+                {/* The button to open modal */}
+                <label htmlFor="my_modal_6" className="btn w-full cursor-pointer px-4 py-2 bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium">
                   Edit Profile
-                </button>
-                <button onClick={()=>handleResumeDownload(authUser?.resume)} className="w-full cursor-pointer flex justify-center items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-500 transition-colors duration-200 font-medium">
-                  <a href={authUser?.resume}/>
+                </label>
+
+                <input
+                  type="checkbox"
+                  id="my_modal_6"
+                  className="modal-toggle"
+                />
+                <div className="modal" role="dialog">
+                  <div className="modal-box">
+                    <UpdateProfile/>
+                    <div className="modal-action">
+                      <label htmlFor="my_modal_6" className="btn">
+                        Close!
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleResumeDownload(authUser?.resume)}
+                  className="w-full cursor-pointer flex justify-center items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-500 transition-colors duration-200 font-medium"
+                >
+                  <a href={authUser?.resume} />
                   <span>
                     <DownloadIcon />
                   </span>{" "}
@@ -288,68 +314,78 @@ function Profile() {
                   </span>{" "}
                   Share Profile
                 </button>
-                <div className="flex items-center justify-between" >
-                  <div className="flex gap-2" >
-                <button
-                  className="btn bg-yellow-500 "
-                  onClick={() =>
-                    document.getElementById("my_modal_1").showModal()
-                  }
-                >
-                  Logout
-                </button>
-                <dialog id="my_modal_1" className="modal">
-                  <div className="modal-box flex items-center gap-3 ">
-                    <p className="py-4">
-                      Are you sure want to Logout ?
-                    </p>
-                    <div className="modal-action">
-                      <form method="dialog">
-                        <button className="btn">Close</button>
-                      </form>
-                    </div>
-                    <div className="modal-action">
-                      <form method="dialog">
-                        <button className="btn bg-yellow-500 " onClick={handleLogout}>Logout</button>
-                      </form>
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-2">
+                    <button
+                      className="btn bg-yellow-500 "
+                      onClick={() =>
+                        document.getElementById("my_modal_1").showModal()
+                      }
+                    >
+                      Logout
+                    </button>
+                    <dialog id="my_modal_1" className="modal">
+                      <div className="modal-box flex items-center gap-3 ">
+                        <p className="py-4">Are you sure want to Logout ?</p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button className="btn">Close</button>
+                          </form>
+                        </div>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button
+                              className="btn bg-yellow-500 "
+                              onClick={handleLogout}
+                            >
+                              Logout
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                    <button
+                      className="btn bg-red-500 "
+                      onClick={() =>
+                        document.getElementById("my_modal_2").showModal()
+                      }
+                    >
+                      Delete
+                    </button>
+                    <dialog id="my_modal_2" className="modal">
+                      <div className="modal-box flex items-center gap-3 ">
+                        <p className="py-4">
+                          Are you sure want to Delete Account ?
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button className="btn">Close</button>
+                          </form>
+                        </div>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button
+                              className="btn bg-red-500 "
+                              onClick={handleDelete}
+                            >
+                              Delete
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
                   </div>
-                </dialog>
-                <button
-                  className="btn bg-red-500 "
-                  onClick={() =>
-                    document.getElementById("my_modal_2").showModal()
-                  }
-                >
-                  Delete
-                </button>
-                <dialog id="my_modal_2" className="modal">
-                  <div className="modal-box flex items-center gap-3 ">
-                    <p className="py-4">
-                      Are you sure want to Delete Account ?
-                    </p>
-                    <div className="modal-action">
-                      <form method="dialog">
-                        <button className="btn">Close</button>
-                      </form>
-                    </div>
-                    <div className="modal-action">
-                      <form method="dialog">
-                        <button className="btn bg-red-500 " onClick={handleDelete}>Delete</button>
-                      </form>
-                    </div>
+                  <div className="my-4 flex items-center gap-3 ">
+                    <h1>Appearance</h1>
+                    <button
+                      onClick={() =>
+                        setTheme(theme === "dark" ? "light" : "dark")
+                      }
+                      className="cursor-pointer"
+                    >
+                      {theme === "dark" ? <Sun /> : <Moon />}
+                    </button>
                   </div>
-                </dialog>
-                  </div>
-              <div className="my-4 flex items-center gap-3 ">
-                <h1>Appearance</h1>
-                <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="cursor-pointer"
-                >
-                  {theme === 'dark' ? <Sun /> : <Moon/>}
-                </button>
-              </div>
                 </div>
               </div>
             </div>

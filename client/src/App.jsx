@@ -6,6 +6,7 @@ import JobDetail from "./components/JobDetail";
 import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 import { UseThemeStore } from "./store/UseThemeStore";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -113,6 +114,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFound/>}/>
         </Routes>
         {!isNavbarVisible && (
         <Footer/>

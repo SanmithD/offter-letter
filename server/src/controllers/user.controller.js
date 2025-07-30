@@ -42,31 +42,6 @@ export const signup = async(req, res) => {
             skill = skills.split(",").map(skill => skill.toLocaleUpperCase().trim()).filter(skill => skill.length > 0 );
         }
 
-        // if(profilePic.name) {
-        //     try {
-        //         const profileUpload = await upload.single(profilePic.name,{
-        //             resource_type: 'image',
-        //             allowed_formats: ['jpg', 'jpeg','png', 'webp']
-        //         });
-        //         profilePicUrl = profileUpload;
-        //     } catch (uploadError) {
-        //         console.error('Profile picture upload error:', uploadError);
-        //         return errorFunction(400, false, "Failed to upload profile picture", res);
-        //     }
-        // }
-
-        // try {
-        //     const resumeUpload = await cloudinary.uploader.upload(resume, {
-        //         resource_type: 'raw',
-        //         allowed_formats: ['pdf', 'doc', 'docx'],
-        //         folder: 'resumes'
-        //     });
-        //     resumeUrl = resumeUpload.secure_url;
-        // } catch (uploadError) {
-        //     console.error('Resume upload error:', uploadError);
-        //     return errorFunction(400, false, "Failed to upload resume. Please ensure it's a valid PDF or DOC file", res);
-        // }
-
         const newUser = new userModel({
             email: email.toLowerCase().trim(),
             name: name.trim(),
@@ -183,3 +158,139 @@ export const getUserInfo = async(req, res) =>{
         return errorFunction(500, false, "Server error", res);
     }
 }
+
+export const updateUser = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        
+        // Extract fields from request body
+        const { 
+            email, 
+            name, 
+            title, 
+            phone, 
+            dob, 
+            address, 
+            bio, 
+            skills, 
+            college, 
+            marks, 
+            experience 
+        } = req.body;
+
+        // Handle file uploads
+        const profilePicFile = req.files?.['profilePic']?.[0];
+        const resumeFile = req.files?.['resume']?.[0];
+
+        // Define allowed fields for update (excluding password for security)
+        const allowedUpdates = [
+            'email', 'name', 'title', 'phone', 'dob', 'address', 
+            'bio', 'skills', 'college', 'marks', 'experience', 
+            'profilePic', 'resume'
+        ];
+
+        // Check if user exists
+        const existingUser = await userModel.findById(userId);
+        if (!existingUser) {
+            return errorFunction(404, false, "User not found", res);
+        }
+
+        const updateData = {};
+
+        if (email !== undefined) {
+            const emailExists = await userModel.findOne({ 
+                email: email.toLowerCase().trim(), 
+                _id: { $ne: userId } 
+            });
+            if (emailExists) {
+                return errorFunction(409, false, "Email already exists", res);
+            }
+            updateData.email = email.toLowerCase().trim();
+        }
+
+        if (name !== undefined && name.trim()) {
+            updateData.name = name.trim();
+        }
+
+        if (title !== undefined && title.trim()) {
+            updateData.title = title.trim();
+        }
+
+        if (phone !== undefined && phone.trim()) {
+            updateData.phone = phone.trim();
+        }
+
+        if (dob !== undefined) {
+            updateData.dob = new Date(dob);
+        }
+
+        if (address !== undefined && address.trim()) {
+            updateData.address = address.trim();
+        }
+
+        if (bio !== undefined) {
+            updateData.bio = bio?.trim() || '';
+        }
+
+        if (college !== undefined && college.trim()) {
+            updateData.college = college.trim();
+        }
+
+        if (marks !== undefined) {
+            updateData.marks = parseFloat(marks);
+        }
+
+        if (experience !== undefined) {
+            updateData.experience = experience || 0;
+        }
+
+        if (skills !== undefined) {
+            let skillArray = [];
+            if (typeof skills === 'string') {
+                skillArray = skills.split(",")
+                    .map(skill => skill.toUpperCase().trim())
+                    .filter(skill => skill.length > 0);
+            } else if (Array.isArray(skills)) {
+                skillArray = skills
+                    .map(skill => skill.toString().toUpperCase().trim())
+                    .filter(skill => skill.length > 0);
+            }
+            updateData.skills = skillArray;
+        }
+
+        if (profilePicFile) {
+            updateData.profilePic = profilePicFile.path;
+        }
+
+        if (resumeFile) {
+            updateData.resume = resumeFile.path;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            return errorFunction(400, false, "No valid fields provided for update", res);
+        }
+
+        // Update user
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userId,
+            updateData,
+            { 
+                new: true, 
+                runValidators: true 
+            }
+        );
+
+        const userResponse = updatedUser.toObject();
+        delete userResponse.password;
+
+        res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+            data: userResponse
+        });
+
+    } catch (error) {
+        console.error('Update error:', error);
+        return errorFunction(500, false, "Server error during update", res);
+    }
+};

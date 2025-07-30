@@ -8,48 +8,92 @@ function Login() {
   const { isLogin, login } = UseAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
-  const handleLogin = async() =>{
+  const handleLogin = async (e) => {
+    e.preventDefault();
     await login(formData);
-      navigate('/');
-  }
+    navigate("/");
+  };
 
   return (
-    <div className="container px-3 " >
-      <div className="h-fit py-3 flex justify-between items-center " >
-        <div className=" flex justify-center items-center" >
-          <img src="offerLogo.png" alt="logo" className="size-[30px] md:size-[50px] lg:size-[50px] " />
+    <div className="min-h-screen flex flex-col justify-center items-center px-4">
+      <header className="w-full max-w-md flex justify-between items-center py-6">
+        <div className="flex items-center gap-2">
+          <img src="offerLogo.png" alt="logo" className="w-10 h-10 md:w-12 md:h-12" />
+          <h1 className="text-2xl md:text-3xl font-bold ">OfferLetter</h1>
         </div>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold " >OfferLetter</h1>
-        <div className="place-content-end" >
-          <p>Help ?</p>
-        </div>
-      </div>
-      <div className="px-4 my-[100px] md:my-[70px] lg:my-[50px] flex justify-center items-center flex-col" >
-        <div className="text-2xl md:text-6xl lg:text-7xl mb-[50px] " >Welcome back to Offer Letter</div>
-        <div className="flex md:w-[400px] lg:w-[400px] h-fit border-1 px-6 py-3 rounded-2xl " >
-          <div className="form w-full font-medium text-[20px] space-y-5 my-4 " >
-            <label className="label w-full ">
-              <input type="email" name="email" placeholder="email..." value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="outline-0 border-b-1 w-full " />
+        <p className="text-sm text-blue-600 cursor-pointer hover:underline">Help?</p>
+      </header>
+
+      <main className="w-full max-w-md shadow-md border rounded-2xl p-8">
+        <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8">
+          Welcome back
+        </h2>
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
             </label>
-            <label className="label w-full flex justify-between ">
-              <span className="flex justify-between items-center" > 
-              <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} placeholder="password..." className="outline-0 border-b-1 w-full " />
-              <button onClick={()=>setShowPassword(!showPassword)} className="cursor-pointer place-content-end ml-[80px] " >{ showPassword ? <EyeOff/> : <Eye/> } </button>
-              </span>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
             </label>
-            <div className="flex flex-col space-y-2.5 " >
-              <Link to='/signup' className="text-[16px] font-medium text-blue-500" >Don't have account ?</Link>
-              <button onClick={handleLogin} className="font-bold text-2xl w-full rounded-2xl px-4 py-2 hover:bg-blue-800 active:bg-blue-950 cursor-pointer bg-blue-500 " >{ isLogin ? "Logging..." : "Login" } </button>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
           </div>
-        </div>
-      </div>
+
+          {/* Actions */}
+          <div className="space-y-3">
+            <button
+              type="submit"
+              className="w-full py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              {isLogin ? "Logging in..." : "Login"}
+            </button>
+            <p className="text-center text-sm text-gray-600">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-blue-600 hover:underline font-medium">
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </form>
+      </main>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

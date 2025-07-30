@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 
-export const UseAuthStore = create((set) => ({
+export const UseAuthStore = create((set, get) => ({
   isSignup: false,
   isLogin: false,
   isLoading: false,
@@ -121,6 +121,19 @@ export const UseAuthStore = create((set) => ({
     } catch (error) {
       console.log(error);
       set({ isLoading: false });
+      toast.error("Something went wrong");
+    }
+  },
+
+  updateUser: async(data) =>{
+    set({ isLoading: true });
+    try {
+      await axiosInstance.patch(`/auth/update`,data);
+      set({ isLoading: false })
+      get().profile();
+    } catch (error) {
+      console.log(error);
+      set({ isLoading : false });
       toast.error("Something went wrong");
     }
   }

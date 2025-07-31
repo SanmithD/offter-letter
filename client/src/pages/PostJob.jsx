@@ -158,7 +158,7 @@ function PostJob() {
           </select>
         </div> 
         
-        <div className="flex items-center md:gap-3 lg:gap-3 ">
+        <div className="flex flex-col md:flex-row items-center md:gap-3 lg:gap-3 ">
 
         <div className="flex flex-col justify-start " >
           <label className="text-[18px] md:text-[20px] lg:text-[20px] font-medium tracking-wide " >Company location</label>

@@ -4,6 +4,9 @@ A modern job portal platform with AI-powered job recommendations and intelligent
 ## 🚀 Overview
 OfferLetter is a comprehensive job portal that connects job seekers with employers through an intuitive interface and AI-driven recommendations. The platform offers personalized job matching, easy job posting, and an integrated AI chat system for enhanced user experience.
 
+## Live
+https://offter-letter-client.vercel.app/
+
 ## ✨ Features
 # For Job Seekers
 🔍 Smart Job Search - Find relevant opportunities with advanced filtering
